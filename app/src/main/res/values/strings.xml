@@ -13,4 +13,8 @@
     <string name="nav_sub_menu">More</string>
     <string name="nav_sub_menu_item_developer">About</string>
     <string name="nav_sub_menu_item_libraries">Open Source</string>
+    <string name="input_title">Emergency Contact</string>
+    <string name="input_content">Please enter 10 digit mobile number</string>
+    <string name="input_agree">OK</string>
+    <string name="input_disagree">Cancel</string>
 </resources>
