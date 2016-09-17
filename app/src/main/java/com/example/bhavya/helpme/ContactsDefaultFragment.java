@@ -32,9 +32,14 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.security.Provider;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -47,12 +52,14 @@ public class ContactsDefaultFragment extends Fragment implements
     TextView mEmergencyContactNo;
 //    @BindView(R.id.contact_emergency_default_button) Button mEmergencyContactButton;
 
+    Button mShowMapButton;
     Button mEmergencyContactButton;
     TextView mEmergencyContactTextView;
     public static SharedPreferences preferences;
     GoogleApiClient mClient;
     public static String lattitude = "-1";
     public static String longitude = "-1";
+
 
     // Empty constructor required
     public ContactsDefaultFragment() {
@@ -70,6 +77,18 @@ public class ContactsDefaultFragment extends Fragment implements
         } else {
             mEmergencyContactTextView.setText("No contact specified");
         }
+
+        mShowMapButton = (Button) view.findViewById(R.id.contact_emergency_show_map_button);
+        mShowMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),MapsActivity.class);
+                intent.putExtra("lat",lattitude);
+                intent.putExtra("long",longitude);
+                startActivity(intent);
+            }
+        });
+
 
         mEmergencyContactButton = (Button) view.findViewById(R.id.contact_emergency_default_button);
         mEmergencyContactButton.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +116,12 @@ public class ContactsDefaultFragment extends Fragment implements
                 if(location!=null){
                     lattitude = String.valueOf(location.getLatitude());
                     longitude = String.valueOf(location.getLongitude());
-                    Toast.makeText(getActivity(),"lat "+lattitude+"long "+longitude,Toast.LENGTH_SHORT).show();
+                    SharedPreferences preferences = getActivity().getSharedPreferences("HelpMe",Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("lattitude",lattitude);
+                    editor.putString("longitude",longitude);
+                    editor.commit();
+                    //Toast.makeText(getActivity(),"lat "+lattitude+"long "+longitude,Toast.LENGTH_SHORT).show();
                 } else
                 {
                     Toast.makeText(getActivity(),"No location found",Toast.LENGTH_SHORT).show();
@@ -126,11 +150,13 @@ public class ContactsDefaultFragment extends Fragment implements
     public void onStart() {
         mClient.connect();
         super.onStart();
+        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onStop() {
         mClient.disconnect();
+        EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
@@ -199,6 +225,10 @@ public class ContactsDefaultFragment extends Fragment implements
     public void onLocationChanged(Location location) {
         lattitude = String.valueOf(location.getLatitude());
         longitude = String.valueOf(location.getLongitude());
+        LocationEvent le = new LocationEvent();
+        le.Lattitude = lattitude;
+        le.Longitude = longitude;
+        EventBus.getDefault().post(le);
     }
 
     /*
@@ -217,6 +247,10 @@ public class ContactsDefaultFragment extends Fragment implements
             return false;
         }
         return true;
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getLocation(LocationEvent le){
+        //Toast.makeText(getActivity(),le.Lattitude+" "+le.Longitude,Toast.LENGTH_SHORT).show();
     }
 
 }

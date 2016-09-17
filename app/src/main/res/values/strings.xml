@@ -17,4 +17,5 @@
     <string name="input_content">Please enter 10 digit mobile number</string>
     <string name="input_agree">OK</string>
     <string name="input_disagree">Cancel</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

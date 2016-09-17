@@ -19,4 +19,14 @@
         android:layout_marginTop="100dp"
         android:text="HELP"
         android:id="@+id/contact_emergency_default_button"/>
+
+    <Button
+        android:text="Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/contact_emergency_default_button"
+        android:layout_alignRight="@+id/contact_emergency_default_button"
+        android:layout_alignEnd="@+id/contact_emergency_default_button"
+        android:layout_marginTop="39dp"
+        android:id="@+id/contact_emergency_show_map_button" />
 </RelativeLayout>
