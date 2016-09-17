@@ -47,6 +47,9 @@ public class MainActivity extends AppCompatActivity
 
         setSupportActionBar(toolbar);
 
+        /*
+            Navigation drawer
+         */
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -54,6 +57,9 @@ public class MainActivity extends AppCompatActivity
 
         navigationView.setNavigationItemSelectedListener(this);
 
+        /*
+            Shared preferences
+         */
         preferences = getSharedPreferences(SHARED_PREF_FILE, Context.MODE_PRIVATE);
 
         if(preferences.getString(SHARED_PREF_KEY,SHARED_PREF_INVALID).length()<10){
@@ -62,6 +68,9 @@ public class MainActivity extends AppCompatActivity
             edit.apply();
         }
 
+        /*
+            Listen for changes in shared preferences
+         */
         prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
                 if(key==SHARED_PREF_KEY){
@@ -70,14 +79,16 @@ public class MainActivity extends AppCompatActivity
             }
 
         };
-
         preferences.registerOnSharedPreferenceChangeListener(prefListener);
-
         String value = preferences.getString(SHARED_PREF_KEY,"");
         initViews(value);
-    }
+    } // end onCreate()
 
-
+    /*
+    *
+    *  Initialize home screen with contacts fragment
+    *
+     */
     public void initViews(String value){
         if(value.equals("-1") ){
             ContactsEmptyFragment fragment = new ContactsEmptyFragment();
@@ -91,8 +102,18 @@ public class MainActivity extends AppCompatActivity
             getFragmentManager().beginTransaction().replace(R.id.contactFragmentContainer,fragment)
                     .commit();
         }
-    }
+    }  // end initViews
 
+
+
+
+    /*
+    *
+    *
+    * Code for FAB
+    *
+    *
+     */
     @OnClick(R.id.fab)
     public void fabInput(View view){
         new MaterialDialog.Builder(this)
@@ -117,10 +138,18 @@ public class MainActivity extends AppCompatActivity
                 .positiveText(R.string.input_agree)
                 .negativeText(R.string.input_disagree)
                 .show();
-    }
+    } // end fabInput()
 
 
-
+    /*
+    *
+    *
+    *
+    *  Code for navigation drawer and menu
+    *
+    *
+    *
+    */
     @Override
     public void onBackPressed() {
 
@@ -181,5 +210,7 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
+    } // end code for navigation drawer
+
+
 }
